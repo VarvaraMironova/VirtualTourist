@@ -36,26 +36,38 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="C5U-fU-Ybh">
-                                <rect key="frame" x="0.0" y="64" width="414" height="672"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                                 <animations/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outlet property="delegate" destination="fnw-kJ-1AF" id="1C1-YT-2Sz"/>
+                                    <outletCollection property="gestureRecognizers" destination="Duw-xS-MQ7" appends="YES" id="6g0-b5-V2d"/>
+                                </connections>
                             </mapView>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="C5U-fU-Ybh" firstAttribute="leading" secondItem="WEb-38-ngS" secondAttribute="leading" id="1lM-Fk-Xtr"/>
-                            <constraint firstItem="C5U-fU-Ybh" firstAttribute="top" secondItem="SXJ-hU-lBn" secondAttribute="bottom" id="EKc-Np-awL"/>
                             <constraint firstAttribute="trailing" secondItem="C5U-fU-Ybh" secondAttribute="trailing" id="SkS-wh-SIG"/>
                             <constraint firstItem="Ia6-Ul-uDo" firstAttribute="top" secondItem="C5U-fU-Ybh" secondAttribute="bottom" id="V8M-WA-z56"/>
+                            <constraint firstItem="C5U-fU-Ybh" firstAttribute="top" secondItem="WEb-38-ngS" secondAttribute="top" id="ngu-ia-cqK"/>
                         </constraints>
                         <connections>
                             <outlet property="mapView" destination="C5U-fU-Ybh" id="dOV-AU-LKK"/>
                         </connections>
                     </view>
                     <navigationItem key="navigationItem" id="rXT-98-886"/>
+                    <nil key="simulatedTopBarMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wf4-60-KpQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="Duw-xS-MQ7">
+                    <connections>
+                        <action selector="onMapTapped:" destination="fnw-kJ-1AF" id="rYl-gB-VI1"/>
+                        <outlet property="delegate" destination="fnw-kJ-1AF" id="I2i-Qg-4oE"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="441" y="129"/>
         </scene>

@@ -7,29 +7,52 @@
 //
 
 import UIKit
+import MapKit
 
-class VTMapViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDelegate {
+    var rootView: VTMapView! {
+        get {
+            if isViewLoaded() && self.view.isKindOfClass(VTMapView) {
+                return self.view as! VTMapView
+            } else {
+                return nil
+            }
+        }
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+        if gestureRecognizer.isKindOfClass(UITapGestureRecognizer) {
+            if touch.view!.isKindOfClass(MKAnnotationView) {
+                return false
+            }
+        }
+        
+        return true
     }
-    */
+    
+    @IBAction func onMapTapped(sender: UIGestureRecognizer) {
+        let mapView = rootView.mapView
+        let point = sender.locationInView(mapView)
+        let coordinate = mapView.convertPoint(point, toCoordinateFromView: rootView)
+        let annotation = VTAnnotationModel(coordinate: coordinate)
+        
+        mapView.addAnnotation(annotation)
+    }
+    
+    func mapViewWillStartLoadingMap(mapView: MKMapView) {
+        rootView.showLoadingView()
+    }
+    
+    func mapViewDidFinishLoadingMap(mapView: MKMapView) {
+        rootView.hideLoadingView()
+    }
+    
+    func mapViewDidFailLoadingMap(mapView: MKMapView, withError error: NSError) {
+        rootView.hideLoadingView()
+    }
+    
+    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        //present VTPhotosViewController
+    }
 
 }

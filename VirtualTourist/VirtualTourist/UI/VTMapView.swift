@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class VTMapView: UIView {
+class VTMapView: OTMView {
     @IBOutlet var mapView: MKMapView!
 
 }
