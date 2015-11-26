@@ -10,18 +10,10 @@
         </attribute>
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <relationship name="photos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Photo" inverseName="pin" inverseEntity="Photo" syncable="YES"/>
-        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserModel" inverseName="pins" inverseEntity="UserModel" syncable="YES"/>
         <userInfo/>
     </entity>
-    <entity name="UserModel" representedClassName="VTUserModel" syncable="YES">
-        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="zoomLevel" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <relationship name="pins" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Pin" inverseName="user" inverseEntity="Pin" syncable="YES"/>
-    </entity>
     <elements>
-        <element name="Pin" positionX="261" positionY="189" width="128" height="105"/>
         <element name="Photo" positionX="261" positionY="216" width="128" height="75"/>
-        <element name="UserModel" positionX="279" positionY="234" width="128" height="105"/>
+        <element name="Pin" positionX="261" positionY="189" width="128" height="90"/>
     </elements>
 </model>
