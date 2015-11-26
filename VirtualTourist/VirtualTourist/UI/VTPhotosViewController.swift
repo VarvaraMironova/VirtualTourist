@@ -20,7 +20,7 @@ let kNO_JSON_CALLBACK = "1"
 let kBOUNDING_BOX_HALF_WIDTH  = 10.0
 let kBOUNDING_BOX_HALF_HEIGHT = 10.0
 
-class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
+class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     var selectedPin : VTAnnotationModel!
     var photoArray  : [[String: AnyObject]]!
     var rootView    : VTPhotosView! {
@@ -36,6 +36,8 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        rootView.mapView.addAnnotation(selectedPin)
+        
         let methodArguments = [
             "method": kMETHOD_NAME,
             "api_key": kAPI_KEY,
@@ -49,13 +51,20 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
         searchWithArguments(methodArguments)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     @IBAction func onNewCollectionButton(sender: AnyObject) {
         
+    }
+    
+    func mapViewDidStartLoadingMap(mapView: MKMapView) {
+        rootView.showLoadingViewInView(rootView.mapView)
+    }
+    
+    func mapViewDidFinishLoadingMap(mapView: MKMapView) {
+        rootView.hideLoadingView()
+    }
+    
+    func mapViewDidFailLoadingMap(mapView: MKMapView, withError error: NSError) {
+        rootView.hideLoadingView()
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -103,8 +112,8 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
                 
                 if let photosDictionary = parsedResult.valueForKey("photos") as? NSDictionary {
                     if let photoArray = photosDictionary.valueForKey("photo") as? [[String: AnyObject]] {
-                        if photoArray.count > 5 {
-                            self.photoArray = Array(photoArray[0..<5])
+                        if photoArray.count > 15 {
+                            self.photoArray = Array(photoArray[0..<15])
                         } else {
                             self.photoArray = photoArray
                         }
@@ -151,5 +160,5 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
         
         return (!urlVars.isEmpty ? "?" : "") + urlVars.joinWithSeparator("&")
     }
-
+    
 }

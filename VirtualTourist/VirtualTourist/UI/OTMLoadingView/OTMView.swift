@@ -9,16 +9,26 @@
 import UIKit
 
 class OTMView: UIView {
-    
-    var loadingView: OTMLoadingView!
+    var loadingViewShown : Bool = false
+    var loadingView      : OTMLoadingView!
     
     func showLoadingView() {
-        loadingView = OTMLoadingView.loadingView(self)
+        showLoadingViewInView(self)
+    }
+    
+    func showLoadingViewInView(view: UIView) {
+        if !loadingViewShown {
+            loadingView = OTMLoadingView.loadingView(view)
+            loadingViewShown = true
+        }
     }
     
     func hideLoadingView() {
-        loadingView.hide()
-        loadingView = nil
+        if loadingViewShown {
+            loadingView.hide()
+            loadingView = nil
+            loadingViewShown = false
+        }
     }
 
 }
