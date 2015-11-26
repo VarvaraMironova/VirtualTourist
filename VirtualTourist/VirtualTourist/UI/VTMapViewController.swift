@@ -53,6 +53,10 @@ class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecogni
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         //present VTPhotosViewController
+        let destinationController = storyboard!.instantiateViewControllerWithIdentifier("VTPhotosViewController") as! VTPhotosViewController
+        destinationController.selectedPin = view.annotation as! VTAnnotationModel
+        
+        navigationController!.pushViewController(destinationController, animated: true)
     }
 
 }

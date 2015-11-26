@@ -15,4 +15,8 @@ class VTPhotosView: UIView {
     @IBOutlet var newCollectionButton: UIButton!
     @IBOutlet var noImagesLabel: UILabel!
     
+    func showNoImagesLabel(show: Bool) {
+        noImagesLabel.hidden = !show
+    }
+    
 }
