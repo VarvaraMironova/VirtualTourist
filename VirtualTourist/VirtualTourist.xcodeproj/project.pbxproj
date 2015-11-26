@@ -19,13 +19,14 @@
 		C7A29E141C050B61001B0EF5 /* VTMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E131C050B61001B0EF5 /* VTMapView.swift */; };
 		C7A29E161C050B76001B0EF5 /* VTPhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E151C050B76001B0EF5 /* VTPhotosView.swift */; };
 		C7A29E181C050D37001B0EF5 /* VTPhotosCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E171C050D37001B0EF5 /* VTPhotosCollectionViewCell.swift */; };
-		C7A29E1A1C05275C001B0EF5 /* VTUserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E191C05275C001B0EF5 /* VTUserModel.swift */; };
+		C7A29E1A1C05275C001B0EF5 /* VTSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E191C05275C001B0EF5 /* VTSettingModel.swift */; };
 		C7A29E1C1C05276F001B0EF5 /* VTPinModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E1B1C05276F001B0EF5 /* VTPinModel.swift */; };
 		C7A29E1E1C052784001B0EF5 /* VTPhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E1D1C052783001B0EF5 /* VTPhotoModel.swift */; };
 		C7A29E201C063832001B0EF5 /* VTAnnotationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E1F1C063832001B0EF5 /* VTAnnotationModel.swift */; };
 		C7A29E251C064139001B0EF5 /* OTMLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E221C064139001B0EF5 /* OTMLoadingView.swift */; };
 		C7A29E261C064139001B0EF5 /* OTMLoadingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C7A29E231C064139001B0EF5 /* OTMLoadingView.xib */; };
 		C7A29E271C064139001B0EF5 /* OTMView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E241C064139001B0EF5 /* OTMView.swift */; };
+		C7A29E2A1C07912F001B0EF5 /* VTCoordinateRegionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E291C07912F001B0EF5 /* VTCoordinateRegionExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,13 +65,14 @@
 		C7A29E131C050B61001B0EF5 /* VTMapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTMapView.swift; sourceTree = "<group>"; };
 		C7A29E151C050B76001B0EF5 /* VTPhotosView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTPhotosView.swift; sourceTree = "<group>"; };
 		C7A29E171C050D37001B0EF5 /* VTPhotosCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTPhotosCollectionViewCell.swift; sourceTree = "<group>"; };
-		C7A29E191C05275C001B0EF5 /* VTUserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTUserModel.swift; sourceTree = "<group>"; };
+		C7A29E191C05275C001B0EF5 /* VTSettingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTSettingModel.swift; sourceTree = "<group>"; };
 		C7A29E1B1C05276F001B0EF5 /* VTPinModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTPinModel.swift; sourceTree = "<group>"; };
 		C7A29E1D1C052783001B0EF5 /* VTPhotoModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTPhotoModel.swift; sourceTree = "<group>"; };
 		C7A29E1F1C063832001B0EF5 /* VTAnnotationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTAnnotationModel.swift; sourceTree = "<group>"; };
 		C7A29E221C064139001B0EF5 /* OTMLoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OTMLoadingView.swift; sourceTree = "<group>"; };
 		C7A29E231C064139001B0EF5 /* OTMLoadingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OTMLoadingView.xib; sourceTree = "<group>"; };
 		C7A29E241C064139001B0EF5 /* OTMView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OTMView.swift; sourceTree = "<group>"; };
+		C7A29E291C07912F001B0EF5 /* VTCoordinateRegionExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTCoordinateRegionExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 				C7A29DD71C04C0D7001B0EF5 /* VirtualTourist.xcdatamodeld */,
 				C7A29E091C04F81F001B0EF5 /* Models */,
 				C7A29E0A1C04F81F001B0EF5 /* UI */,
+				C7A29E281C079105001B0EF5 /* Extensions */,
 				C7A29E081C04F768001B0EF5 /* Supporting Files */,
 			);
 			path = VirtualTourist;
@@ -162,7 +165,7 @@
 		C7A29E091C04F81F001B0EF5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				C7A29E191C05275C001B0EF5 /* VTUserModel.swift */,
+				C7A29E191C05275C001B0EF5 /* VTSettingModel.swift */,
 				C7A29E1B1C05276F001B0EF5 /* VTPinModel.swift */,
 				C7A29E1D1C052783001B0EF5 /* VTPhotoModel.swift */,
 				C7A29E1F1C063832001B0EF5 /* VTAnnotationModel.swift */,
@@ -191,6 +194,14 @@
 				C7A29E241C064139001B0EF5 /* OTMView.swift */,
 			);
 			path = OTMLoadingView;
+			sourceTree = "<group>";
+		};
+		C7A29E281C079105001B0EF5 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				C7A29E291C07912F001B0EF5 /* VTCoordinateRegionExtensions.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -334,8 +345,9 @@
 				C7A29DD61C04C0D7001B0EF5 /* AppDelegate.swift in Sources */,
 				C7A29E101C050B2B001B0EF5 /* VTMapViewController.swift in Sources */,
 				C7A29E271C064139001B0EF5 /* OTMView.swift in Sources */,
+				C7A29E2A1C07912F001B0EF5 /* VTCoordinateRegionExtensions.swift in Sources */,
 				C7A29E141C050B61001B0EF5 /* VTMapView.swift in Sources */,
-				C7A29E1A1C05275C001B0EF5 /* VTUserModel.swift in Sources */,
+				C7A29E1A1C05275C001B0EF5 /* VTSettingModel.swift in Sources */,
 				C7A29E201C063832001B0EF5 /* VTAnnotationModel.swift in Sources */,
 				C7A29E161C050B76001B0EF5 /* VTPhotosView.swift in Sources */,
 			);

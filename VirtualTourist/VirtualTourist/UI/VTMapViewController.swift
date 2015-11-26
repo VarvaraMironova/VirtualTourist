@@ -10,6 +10,7 @@ import UIKit
 import MapKit
 
 class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDelegate {
+    var settings = VTSettingModel()
     var rootView: VTMapView! {
         get {
             if isViewLoaded() && self.view.isKindOfClass(VTMapView) {
@@ -18,6 +19,20 @@ class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecogni
                 return nil
             }
         }
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let region = settings.region as MKCoordinateRegion? {
+            rootView.mapView.setRegion(region, animated: true)
+        }
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        settings.region = rootView.mapView.region
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
@@ -39,16 +54,8 @@ class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecogni
         mapView.addAnnotation(annotation)
     }
     
-    func mapViewWillStartLoadingMap(mapView: MKMapView) {
-        rootView.showLoadingView()
-    }
-    
     func mapViewDidFinishLoadingMap(mapView: MKMapView) {
-        rootView.hideLoadingView()
-    }
-    
-    func mapViewDidFailLoadingMap(mapView: MKMapView, withError error: NSError) {
-        rootView.hideLoadingView()
+        settings.region = rootView.mapView.region
     }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
