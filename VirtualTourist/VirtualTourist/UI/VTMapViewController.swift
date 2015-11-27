@@ -10,6 +10,8 @@ import UIKit
 import MapKit
 import CoreData
 
+let kVTDelta = 0.5
+
 class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDelegate {
     var settings = VTSettingModel()
     var rootView: VTMapView! {
@@ -55,20 +57,21 @@ class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecogni
         settings.region = rootView.mapView.region
     }
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-        if gestureRecognizer.isKindOfClass(UITapGestureRecognizer) {
-            if touch.view!.isKindOfClass(MKAnnotationView) {
-                return false
-            }
-        }
-        
-        return true
-    }
-    
     @IBAction func onMapTapped(sender: UIGestureRecognizer) {
         let mapView = rootView.mapView
         let point = sender.locationInView(mapView)
         let coordinate = mapView.convertPoint(point, toCoordinateFromView: rootView)
+        
+        //check if on the map still exists pin with almost equal (with kVTDelta) coordinates
+        for pin in mapView.annotations {
+            let pinCoordinate = pin.coordinate
+            if fabs(pinCoordinate.latitude - coordinate.latitude) <= kVTDelta &&
+                fabs(pinCoordinate.longitude - coordinate.longitude) <= kVTDelta
+            {
+                return
+            }
+        }
+        
         let annotation = VTAnnotationModel(coordinate: coordinate)
         
         mapView.addAnnotation(annotation)

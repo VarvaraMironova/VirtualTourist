@@ -9,7 +9,6 @@
         <!--Navigation Controller-->
         <scene sceneID="r7l-gg-dq7">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="SLD-UC-DBI" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController id="vC3-pB-5Vb" sceneMemberID="viewController">
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="DjV-YW-jjY">
@@ -20,6 +19,7 @@
                         <segue destination="fnw-kJ-1AF" kind="relationship" relationship="rootViewController" id="KdI-Da-gqT"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SLD-UC-DBI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-89" y="510"/>
         </scene>
@@ -41,7 +41,7 @@
                                 <gestureRecognizers/>
                                 <connections>
                                     <outlet property="delegate" destination="fnw-kJ-1AF" id="1C1-YT-2Sz"/>
-                                    <outletCollection property="gestureRecognizers" destination="Duw-xS-MQ7" appends="YES" id="6g0-b5-V2d"/>
+                                    <outletCollection property="gestureRecognizers" destination="waT-DZ-F0K" appends="YES" id="mCu-ZA-U6l"/>
                                 </connections>
                             </mapView>
                         </subviews>
@@ -62,12 +62,11 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wf4-60-KpQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="Duw-xS-MQ7">
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="waT-DZ-F0K">
                     <connections>
-                        <action selector="onMapTapped:" destination="fnw-kJ-1AF" id="rYl-gB-VI1"/>
-                        <outlet property="delegate" destination="fnw-kJ-1AF" id="I2i-Qg-4oE"/>
+                        <action selector="onMapTapped:" destination="fnw-kJ-1AF" id="iZ8-ey-p7w"/>
                     </connections>
-                </tapGestureRecognizer>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="441" y="129"/>
         </scene>
