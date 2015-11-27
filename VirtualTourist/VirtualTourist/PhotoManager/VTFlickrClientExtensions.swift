@@ -51,6 +51,8 @@ extension VTFlickrClient {
     }
     
     func cancel() {
-        downloadTask.cancel()
+        if nil != downloadTask {
+            downloadTask!.cancel()
+        }
     }
 }

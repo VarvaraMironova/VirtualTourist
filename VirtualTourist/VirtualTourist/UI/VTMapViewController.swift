@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDelegate {
     var settings = VTSettingModel()
@@ -17,6 +18,25 @@ class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecogni
                 return self.view as! VTMapView
             } else {
                 return nil
+            }
+        }
+    }
+    
+    var sharedContext: NSManagedObjectContext {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        let fetchRequest = NSFetchRequest(entityName: "VTPinModel")
+        fetchRequest.includesSubentities = false;
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "latitude", ascending: true)]
+        
+        if let pins = (try? sharedContext.executeFetchRequest(fetchRequest)) as? [VTPinModel] {
+            for pin in pins {
+                let annotation = VTAnnotationModel(annotation: pin);
+                rootView.mapView.addAnnotation(annotation)
             }
         }
     }
@@ -52,6 +72,13 @@ class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecogni
         let annotation = VTAnnotationModel(coordinate: coordinate)
         
         mapView.addAnnotation(annotation)
+        
+        //save pin to CoreData
+        dispatch_async(dispatch_get_main_queue()) {
+            let pin = VTPinModel(coordinate: coordinate, context: self.sharedContext)
+            annotation.pin = pin
+            CoreDataStackManager.sharedInstance().saveContext()
+        }
     }
     
     func mapViewDidFinishLoadingMap(mapView: MKMapView) {
@@ -65,5 +92,5 @@ class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecogni
         
         navigationController!.pushViewController(destinationController, animated: true)
     }
-
+    
 }

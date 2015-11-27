@@ -10,7 +10,7 @@ import UIKit
 
 class VTFlickrClient: NSObject {
     var session      : NSURLSession
-    var downloadTask : NSURLSessionDataTask
+    var downloadTask : NSURLSessionDataTask?
     
     typealias CompletionHander = (result: AnyObject!, error: NSError?) -> Void
     
@@ -21,6 +21,7 @@ class VTFlickrClient: NSObject {
         super.init()
     }
     
+    // MARK: - Shared Instance
     class func sharedInstance() -> VTFlickrClient {
         
         struct singleton {

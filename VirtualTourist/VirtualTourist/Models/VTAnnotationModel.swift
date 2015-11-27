@@ -9,17 +9,19 @@
 import MapKit
 
 class VTAnnotationModel: NSObject, MKAnnotation {
-    var coordinate  : CLLocationCoordinate2D
-    var title       : String?
-    var subtitle    : String?
+    var coordinate: CLLocationCoordinate2D
+    var pin: VTPinModel! {
+        didSet {
+            coordinate = pin.coordinate
+        }
+    }
+
+    
+    init(annotation: VTPinModel) {
+        self.coordinate = annotation.coordinate
+    }
     
     init(coordinate: CLLocationCoordinate2D) {
         self.coordinate = coordinate
-    }
-    
-    init(coordinate: CLLocationCoordinate2D, title: String, subtitle: String) {
-        self.coordinate = coordinate
-        self.title = title
-        self.subtitle = subtitle
     }
 }
