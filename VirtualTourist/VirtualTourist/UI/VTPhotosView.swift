@@ -27,8 +27,8 @@ class VTPhotosView: OTMView {
         flowLayout.itemSize = CGSizeMake(cellWidth, cellWidth)
     }
     
-    func showNoImagesLabel(show: Bool) {
-        noImagesLabel.hidden = !show
+    func showNoImagesLabel(needHide: Bool) {
+        noImagesLabel.hidden = needHide
     }
     
 }

@@ -11,7 +11,7 @@ import UIKit
 class VTPhotosCollectionViewCell: UICollectionViewCell {
     @IBOutlet var photoImageView: UIImageView!
     
-    func fillWithPhotoDictionary(photoDictionary:[String: AnyObject]) {
-        
+    func fillWithImage(image:UIImage) {
+        self.photoImageView.image = image
     }
 }

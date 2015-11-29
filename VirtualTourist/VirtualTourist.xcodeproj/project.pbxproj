@@ -33,6 +33,7 @@
 		C7A29E331C086251001B0EF5 /* VTFlickrClientConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E321C086251001B0EF5 /* VTFlickrClientConstants.swift */; };
 		C7A29E351C087B43001B0EF5 /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E341C087B43001B0EF5 /* CoreDataStackManager.swift */; };
 		C7A29E371C0B26B3001B0EF5 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E361C0B26B2001B0EF5 /* ImageCache.swift */; };
+		C7A29E3B1C0B45B6001B0EF5 /* VTUIViewControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A29E3A1C0B45B6001B0EF5 /* VTUIViewControllerExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +86,7 @@
 		C7A29E321C086251001B0EF5 /* VTFlickrClientConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTFlickrClientConstants.swift; sourceTree = "<group>"; };
 		C7A29E341C087B43001B0EF5 /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStackManager.swift; sourceTree = "<group>"; };
 		C7A29E361C0B26B2001B0EF5 /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		C7A29E3A1C0B45B6001B0EF5 /* VTUIViewControllerExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTUIViewControllerExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -216,6 +218,7 @@
 			children = (
 				C7A29E291C07912F001B0EF5 /* VTCoordinateRegionExtensions.swift */,
 				C7A29E2E1C07B553001B0EF5 /* VTPinExtensions.swift */,
+				C7A29E3A1C0B45B6001B0EF5 /* VTUIViewControllerExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -366,6 +369,7 @@
 				C7A29E2F1C07B553001B0EF5 /* VTPinExtensions.swift in Sources */,
 				C7A29E1C1C05276F001B0EF5 /* VTPinModel.swift in Sources */,
 				C7A29DD91C04C0D7001B0EF5 /* VirtualTourist.xcdatamodeld in Sources */,
+				C7A29E3B1C0B45B6001B0EF5 /* VTUIViewControllerExtensions.swift in Sources */,
 				C7A29E121C050B47001B0EF5 /* VTPhotosViewController.swift in Sources */,
 				C7A29E2D1C07B46C001B0EF5 /* VTFlickrClient.swift in Sources */,
 				C7A29E251C064139001B0EF5 /* OTMLoadingView.swift in Sources */,

@@ -49,4 +49,15 @@ class VTPinModel: NSManagedObject {
         photos.addObject(photo)
         photo.pin = self
     }
+    
+    func storePhotosFromArray(array: [[String : AnyObject]], completionHandler: (finished: Bool) -> Void) {
+        for photoArray in array {
+            let photoModel = VTPhotoModel(dictionary: photoArray, context: CoreDataStackManager.sharedInstance().managedObjectContext)
+            self.addPhoto(photoModel)
+        }
+            
+        CoreDataStackManager.sharedInstance().saveContext()
+            
+        completionHandler(finished: true)
+    }
 }

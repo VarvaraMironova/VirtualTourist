@@ -73,6 +73,15 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
         
         let annotation = VTAnnotationModel(coordinate: coordinate)
         
+        //prefetch photos from Flickr
+        VTFlickrClient.sharedInstance().searchPhotoNearPin(annotation) {success, error in
+            if nil != error {
+                print(error!.localizedDescription)
+            } else {
+                print("LOADED")
+            }
+        }
+        
         mapView.addAnnotation(annotation)
         
         //save pin to CoreData
@@ -127,13 +136,21 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
             
         case .Ending:
             //save new coordinate to CoreData
-            dispatch_async(dispatch_get_main_queue()) {
-                if nil == self.draggedPin {
-                    return;
-                }
+            if nil == self.draggedPin {
+                return;
+            }
                 
+            dispatch_async(dispatch_get_main_queue()) {
                 self.draggedPin!.coordinate = coordinate
                 CoreDataStackManager.sharedInstance().saveContext()
+            }
+                
+            VTFlickrClient.sharedInstance().searchPhotoNearPin(view.annotation as! VTAnnotationModel) {photoArray, error in
+                if nil != error {
+                    print(error!.localizedDescription)
+                } else {
+                    print("LOADED")
+                }
             }
             
             break
