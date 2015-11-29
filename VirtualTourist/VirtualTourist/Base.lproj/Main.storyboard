@@ -9,7 +9,6 @@
         <!--Navigation Controller-->
         <scene sceneID="r7l-gg-dq7">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="SLD-UC-DBI" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController id="vC3-pB-5Vb" sceneMemberID="viewController">
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="DjV-YW-jjY">
@@ -20,6 +19,7 @@
                         <segue destination="fnw-kJ-1AF" kind="relationship" relationship="rootViewController" id="KdI-Da-gqT"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SLD-UC-DBI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-89" y="510"/>
         </scene>
@@ -35,13 +35,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="C5U-fU-Ybh">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" pitchEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C5U-fU-Ybh">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                                 <animations/>
                                 <gestureRecognizers/>
                                 <connections>
                                     <outlet property="delegate" destination="fnw-kJ-1AF" id="1C1-YT-2Sz"/>
-                                    <outletCollection property="gestureRecognizers" destination="Duw-xS-MQ7" appends="YES" id="6g0-b5-V2d"/>
+                                    <outletCollection property="gestureRecognizers" destination="waT-DZ-F0K" appends="YES" id="mCu-ZA-U6l"/>
                                 </connections>
                             </mapView>
                         </subviews>
@@ -62,12 +62,11 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wf4-60-KpQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="Duw-xS-MQ7">
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="waT-DZ-F0K">
                     <connections>
-                        <action selector="onMapTapped:" destination="fnw-kJ-1AF" id="rYl-gB-VI1"/>
-                        <outlet property="delegate" destination="fnw-kJ-1AF" id="I2i-Qg-4oE"/>
+                        <action selector="onMapTapped:" destination="fnw-kJ-1AF" id="iZ8-ey-p7w"/>
                     </connections>
-                </tapGestureRecognizer>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="441" y="129"/>
         </scene>
@@ -86,15 +85,15 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n4X-rA-mkW">
                                 <rect key="frame" x="0.0" y="20" width="414" height="716"/>
                                 <subviews>
-                                    <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="9QB-Ca-Su8">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="132"/>
+                                    <mapView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" scrollEnabled="NO" rotateEnabled="NO" pitchEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9QB-Ca-Su8">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="155"/>
                                         <animations/>
                                         <connections>
                                             <outlet property="delegate" destination="GkU-GC-KA0" id="sLu-h9-ClV"/>
                                         </connections>
                                     </mapView>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="gos-8c-o6a">
-                                        <rect key="frame" x="0.0" y="132" width="414" height="522"/>
+                                        <rect key="frame" x="0.0" y="155" width="414" height="522"/>
                                         <animations/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="eOP-sc-9ma">
@@ -144,7 +143,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eY4-7N-KqP">
-                                        <rect key="frame" x="0.0" y="654" width="414" height="62"/>
+                                        <rect key="frame" x="0.0" y="677" width="414" height="39"/>
                                         <animations/>
                                         <state key="normal" title="New Collection">
                                             <color key="titleColor" red="0.1019607843" green="0.1019607843" blue="0.10980392160000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -157,7 +156,7 @@
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="9QB-Ca-Su8" firstAttribute="height" secondItem="n4X-rA-mkW" secondAttribute="height" multiplier="128:692" id="3Gj-do-fs5"/>
+                                    <constraint firstItem="9QB-Ca-Su8" firstAttribute="height" secondItem="n4X-rA-mkW" secondAttribute="height" multiplier="150:692" id="3Gj-do-fs5"/>
                                     <constraint firstItem="chl-hi-i8I" firstAttribute="centerX" secondItem="n4X-rA-mkW" secondAttribute="centerX" id="AGV-Fh-8NX"/>
                                     <constraint firstItem="9QB-Ca-Su8" firstAttribute="top" secondItem="n4X-rA-mkW" secondAttribute="top" id="Bb1-7l-EYT"/>
                                     <constraint firstItem="gos-8c-o6a" firstAttribute="top" secondItem="9QB-Ca-Su8" secondAttribute="bottom" id="GVb-hS-PMU"/>

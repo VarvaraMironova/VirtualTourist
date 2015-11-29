@@ -8,12 +8,14 @@
 
 import UIKit
 import MapKit
+import CoreData
 
-class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
+class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate
 {
-    var selectedPin : VTAnnotationModel!
-    var photoArray  : [[String: AnyObject]]!
-    var rootView    : VTPhotosView! {
+    var selectedPin     : VTAnnotationModel!
+    var blockOperation  : NSBlockOperation?
+    
+    var rootView        : VTPhotosView! {
         get {
             if isViewLoaded() && self.view.isKindOfClass(VTPhotosView) {
                 return self.view as! VTPhotosView
@@ -23,74 +25,199 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
         }
     }
     
+    var shouldReloadCollectionView : Bool?
+    
+    // MARK: - Core Data Convenience
+    var sharedContext: NSManagedObjectContext {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
+    }
+    
+    // MARK: - NSFetchedResultsController
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        let fetchRequest = NSFetchRequest(entityName: "VTPhotoModel")
+        let pin = self.selectedPin.pinModel()
+        
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "url", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "pin == %@", pin!);
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+            managedObjectContext: self.sharedContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        return fetchedResultsController
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        rootView.showLoadingViewInView(rootView.photosCollectionView)
-        VTFlickrClient.sharedInstance().searchPhotoNearPin(selectedPin) {photoArray, error in
-            dispatch_async(dispatch_get_main_queue(), {
-                self.rootView.hideLoadingView()
-                if nil != error {
-                    self.displayError(error!)
-                } else {
-                    self.photoArray = photoArray
+        rootView.mapView.addAnnotation(selectedPin)
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {}
+        
+        fetchedResultsController.delegate = self
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        rootView.mapView.region = MKCoordinateRegionMake(selectedPin.coordinate, MKCoordinateSpanMake(0.04, 0))
+    }
+    
+    @IBAction func onNewCollectionButton(sender: AnyObject) {
+        //remove current photoCollection
+        if let photos = fetchedResultsController.fetchedObjects as? [VTPhotoModel] {
+            dispatch_async(dispatch_get_main_queue()) {
+                for photo in photos {
+                    CoreDataStackManager.sharedInstance().delete(photo)
+                }
+            }
+        }
+        
+        //load new photoCollection
+        VTFlickrClient.sharedInstance().searchPhotoNearPin(selectedPin) {success, error in
+            if nil != error {
+                print(error!.localizedDescription)
+            } else {
+                dispatch_async(dispatch_get_main_queue()) {
                     self.rootView.photosCollectionView.reloadData()
                 }
-            })
+            }
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        rootView.mapView.addAnnotation(selectedPin)
-    }
-
-    @IBAction func onNewCollectionButton(sender: AnyObject) {
-        
-    }
-    
-    func mapViewDidStartLoadingMap(mapView: MKMapView) {
-        rootView.showLoadingViewInView(rootView.mapView)
-    }
-    
-    func mapViewDidFinishLoadingMap(mapView: MKMapView) {
-        rootView.hideLoadingView()
-    }
-    
-    func mapViewDidFailLoadingMap(mapView: MKMapView, withError error: NSError) {
-        rootView.hideLoadingView()
+    // MARK: UICollectionViewDataSource
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+        return fetchedResultsController.sections!.count
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if nil == photoArray {
-            rootView.showNoImagesLabel(true)
-            return 0
-        } else {
-            rootView.showNoImagesLabel(false)
-            return photoArray.count
-        }
+        let count = self.fetchedResultsController.sections![section].numberOfObjects
+        let needHideLabel = count > 0
+        rootView.showNoImagesLabel(needHideLabel)
+        
+        return count
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
+    {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("VTPhotosCollectionViewCell", forIndexPath: indexPath) as! VTPhotosCollectionViewCell
-        cell.fillWithPhotoDictionary(photoArray[indexPath.item])
+        if fetchedResultsController.fetchedObjects?.count < indexPath.row {
+            return cell
+        }
+        
+        let photoModel = fetchedResultsController.objectAtIndexPath(indexPath) as! VTPhotoModel
+        var image = UIImage(named: "photoPlaceholder")
+        if photoModel.image != nil {
+            image = photoModel.image
+        } else {
+            VTFlickrClient.sharedInstance().imageDataForPhotoModel(photoModel) {data, error in
+                if let error = error {
+                    print("Poster download error: \(error.localizedDescription)")
+                }
+                
+                if let data = data {
+                    image = UIImage(data: data)
+                    
+                    // cash image
+                    photoModel.image = image
+                    
+                    dispatch_async(dispatch_get_main_queue()) {
+                        cell.fillWithImage(image!)
+                    }
+                }
+            }
+        }
+
+        cell.fillWithImage(image!)
         
         return cell
     }
     
+    // MARK: UICollectionViewDelegate
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let photoModel = fetchedResultsController.objectAtIndexPath(indexPath) as! VTPhotoModel
+        CoreDataStackManager.sharedInstance().delete(photoModel)
         
+        CoreDataStackManager.sharedInstance().saveContext()
     }
     
-    // MARK: - Private
+    //MARK: - NSFetchedResultControllerDelegate
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+        shouldReloadCollectionView = false
+        blockOperation = NSBlockOperation()
+    }
     
-    func displayError(error: NSError) {
-        self.rootView.hideLoadingView()
+    func controller(controller: NSFetchedResultsController,
+        didChangeObject anObject: AnyObject,
+        atIndexPath indexPath: NSIndexPath?,
+        forChangeType type: NSFetchedResultsChangeType,
+        newIndexPath: NSIndexPath?)
+    {
+        let collectionView = rootView.photosCollectionView
+        switch(type) {
+            case .Insert:
+                if collectionView.numberOfSections() > 0 {
+                    if collectionView.numberOfItemsInSection(newIndexPath!.section) == 0 {
+                        self.shouldReloadCollectionView = true;
+                    } else {
+                        self.blockOperation!.addExecutionBlock({collectionView.insertItemsAtIndexPaths([newIndexPath!])})
+                    }
+                } else {
+                    self.shouldReloadCollectionView = true;
+                }
+                
+                break
+                
+            case .Delete:
+                if collectionView.numberOfItemsInSection(indexPath!.section) == 1 {
+                    self.shouldReloadCollectionView = true
+                } else {
+                    self.blockOperation!.addExecutionBlock({collectionView.deleteItemsAtIndexPaths([indexPath!])})
+                }
+                
+                break
+                
+            case .Update:
+                self.blockOperation!.addExecutionBlock({collectionView.reloadItemsAtIndexPaths([indexPath!])})
+                break
+                
+            case .Move:
+                self.blockOperation!.addExecutionBlock({
+                    collectionView.moveItemAtIndexPath(indexPath!, toIndexPath: newIndexPath!)
+                })
+                
+                break
+        }
+    }
+    
+    func controller(controller: NSFetchedResultsController,
+        didChangeSection sectionInfo: NSFetchedResultsSectionInfo,
+        atIndex sectionIndex: Int,
+        forChangeType type: NSFetchedResultsChangeType)
+    {
+        let collectionView = rootView.photosCollectionView
+        switch(type) {
+        case .Insert:
+            self.blockOperation!.addExecutionBlock({collectionView.insertSections(NSIndexSet(index: sectionIndex))})
+            break
             
-        let alertViewController: UIAlertController = UIAlertController(title: "Oops!", message: error.localizedDescription, preferredStyle: .Alert)
-        alertViewController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-        self.presentViewController(alertViewController, animated: true, completion: nil)
+        case .Delete:
+            self.blockOperation!.addExecutionBlock({collectionView.deleteSections(NSIndexSet(index: sectionIndex))})
+            break
+            
+        default:
+            break
+        }
     }
     
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        if let _ = shouldReloadCollectionView as Bool! {
+            rootView.photosCollectionView.reloadData()
+        } else {
+            rootView.photosCollectionView.performBatchUpdates({self.blockOperation!.start()}, completion: nil)
+        }
+    }
 }

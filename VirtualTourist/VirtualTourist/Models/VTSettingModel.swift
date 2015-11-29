@@ -9,7 +9,7 @@
 import MapKit
 
 class VTSettingModel: NSObject {
-    var defaults : NSUserDefaults = NSUserDefaults.standardUserDefaults()
+    var defaults : NSUserDefaults
     var region   : MKCoordinateRegion? {
         get {
             if let regionDict = defaults.objectForKey("region") as? [String:CLLocationDegrees] {
@@ -28,6 +28,12 @@ class VTSettingModel: NSObject {
     
     deinit {
         self.defaults.synchronize()
+    }
+    
+    override init() {
+        self.defaults = NSUserDefaults.standardUserDefaults()
+        
+        super.init()
     }
     
     override func setNilValueForKey(key: String) {

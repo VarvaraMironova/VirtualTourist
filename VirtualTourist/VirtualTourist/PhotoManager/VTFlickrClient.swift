@@ -9,8 +9,19 @@
 import UIKit
 
 class VTFlickrClient: NSObject {
-    var session      : NSURLSession
-    var downloadTask : NSURLSessionDataTask
+    var session         : NSURLSession
+    var downloadTask    : NSURLSessionDataTask?
+    var getImageDataTask: NSURLSessionTask?
+    
+    var methodArguments = [
+        "method"        : kVTParameters.methodName,
+        "api_key"       : kVTParameters.APIKey,
+        "safe_search"   : kVTParameters.safeSearch,
+        "extras"        : kVTParameters.extras,
+        "format"        : kVTParameters.dataFormat,
+        "nojsoncallback": kVTParameters.noJSONCallback,
+        "per_page"      : "40"
+    ]
     
     typealias CompletionHander = (result: AnyObject!, error: NSError?) -> Void
     
@@ -21,6 +32,7 @@ class VTFlickrClient: NSObject {
         super.init()
     }
     
+    // MARK: - Shared Instance
     class func sharedInstance() -> VTFlickrClient {
         
         struct singleton {
@@ -29,6 +41,13 @@ class VTFlickrClient: NSObject {
         
         return singleton.sharedInstance
     }
+    
+    // MARK: - Shared Image Cache
+    struct Caches {
+        static let imageCache = ImageCache()
+    }
+    
+    // MARK: - Helpers
     
     class func errorForMessage(message: String) -> NSError {
         let userInfo = [NSLocalizedDescriptionKey : message]
@@ -66,6 +85,8 @@ class VTFlickrClient: NSObject {
         return (!urlVars.isEmpty ? "?" : "") + urlVars.joinWithSeparator("&")
     }
     
+    // MARK: - All purpose tasks
+    
     func task(request: NSURLRequest, completionHandler: (result: NSData!, error: NSError?) -> Void) -> NSURLSessionDataTask
     {
         let task = session.dataTaskWithRequest(request) {data, response, downloadError in
@@ -73,6 +94,21 @@ class VTFlickrClient: NSObject {
                 completionHandler(result: nil, error: error)
             } else {
                 completionHandler(result: data, error: nil)
+            }
+        }
+        
+        task.resume()
+        
+        return task
+    }
+    
+    func taskForImage(request: NSURLRequest, completionHandler: (imageData: NSData?, error: NSError?) ->  Void) -> NSURLSessionTask
+    {
+        let task = session.dataTaskWithRequest(request) {data, response, downloadError in
+            if let error = downloadError {
+                completionHandler(imageData: nil, error: error)
+            } else {
+                completionHandler(imageData: data, error: nil)
             }
         }
         
