@@ -8,8 +8,9 @@
 
 import UIKit
 import MapKit
+import CoreData
 
-class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
+class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate
 {
     var selectedPin : VTAnnotationModel!
     var photoArray  : [[String: AnyObject]]!
@@ -23,8 +24,32 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
         }
     }
     
+    // MARK: - Core Data Convenience
+    var sharedContext: NSManagedObjectContext {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
+    }
+    
+    
+    // MARK: - Fetched Results Controller
+//    lazy var fetchedResultsController: NSFetchedResultsController = {
+//        let fetchRequest = NSFetchRequest(entityName: "VTPhotoModel")
+//        
+//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
+//        fetchRequest.predicate = NSPredicate(format: "pin == %@", self.selectedPin);
+//        
+//        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+//            managedObjectContext: self.sharedContext,
+//            sectionNameKeyPath: nil,
+//            cacheName: nil)
+//        
+//        return fetchedResultsController
+//        
+//    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        rootView.mapView.addAnnotation(selectedPin)
         
         rootView.showLoadingViewInView(rootView.photosCollectionView)
         VTFlickrClient.sharedInstance().searchPhotoNearPin(selectedPin) {photoArray, error in
@@ -38,28 +63,22 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
                 }
             })
         }
+        
+//        do {
+//            try fetchedResultsController.performFetch()
+//        } catch {}
+//        
+//        fetchedResultsController.delegate = self
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
         
-        rootView.mapView.addAnnotation(selectedPin)
+        rootView.mapView.region = MKCoordinateRegionMake(selectedPin.coordinate, MKCoordinateSpanMake(0.04, 0))
     }
-
+    
     @IBAction func onNewCollectionButton(sender: AnyObject) {
         
-    }
-    
-    func mapViewDidStartLoadingMap(mapView: MKMapView) {
-        rootView.showLoadingViewInView(rootView.mapView)
-    }
-    
-    func mapViewDidFinishLoadingMap(mapView: MKMapView) {
-        rootView.hideLoadingView()
-    }
-    
-    func mapViewDidFailLoadingMap(mapView: MKMapView, withError error: NSError) {
-        rootView.hideLoadingView()
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

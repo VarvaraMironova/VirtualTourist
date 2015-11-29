@@ -10,9 +10,11 @@ import UIKit
 import MapKit
 import CoreData
 
-let kVTDelta = 0.5
+let kVTDelta         = 0.5
+let kVTPinIdentifier = "pin"
 
-class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDelegate {
+class VTMapViewController: UIViewController, MKMapViewDelegate {
+    var draggedPin: VTPinModel?
     var settings = VTSettingModel()
     var rootView: VTMapView! {
         get {
@@ -32,9 +34,6 @@ class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecogni
         super.viewDidLoad()
         
         let fetchRequest = NSFetchRequest(entityName: "VTPinModel")
-        fetchRequest.includesSubentities = false;
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "latitude", ascending: true)]
-        
         if let pins = (try? sharedContext.executeFetchRequest(fetchRequest)) as? [VTPinModel] {
             for pin in pins {
                 let annotation = VTAnnotationModel(annotation: pin);
@@ -62,7 +61,7 @@ class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecogni
         let point = sender.locationInView(mapView)
         let coordinate = mapView.convertPoint(point, toCoordinateFromView: rootView)
         
-        //check if on the map still exists pin with almost equal (with kVTDelta) coordinates
+        //check if on the map still exists pin with approximately equal (with kVTDelta) coordinates
         for pin in mapView.annotations {
             let pinCoordinate = pin.coordinate
             if fabs(pinCoordinate.latitude - coordinate.latitude) <= kVTDelta &&
@@ -84,8 +83,21 @@ class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecogni
         }
     }
     
-    func mapViewDidFinishLoadingMap(mapView: MKMapView) {
-        settings.region = rootView.mapView.region
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation.isKindOfClass(MKUserLocation) {
+            return nil;
+        }
+        
+        var annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(kVTPinIdentifier) as? MKPinAnnotationView
+        
+        if nil == annotationView {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: kVTPinIdentifier)
+            annotationView!.draggable = true
+        } else {
+            annotationView!.annotation = annotation
+        }
+        
+        return annotationView
     }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
@@ -96,4 +108,44 @@ class VTMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecogni
         navigationController!.pushViewController(destinationController, animated: true)
     }
     
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, didChangeDragState newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState)
+    {
+        if nil == view.annotation {
+            return
+        }
+        
+        let coordinate = view.annotation!.coordinate
+        
+        switch (newState) {
+        case .Starting:
+            //fetch and save VTPinModel to variable draggedPin
+            if let annotationModel = view.annotation as? VTAnnotationModel {
+                draggedPin = annotationModel.pinModel()
+            }
+            
+            break
+            
+        case .Ending:
+            //save new coordinate to CoreData
+            dispatch_async(dispatch_get_main_queue()) {
+                if nil == self.draggedPin {
+                    return;
+                }
+                
+                self.draggedPin!.coordinate = coordinate
+                CoreDataStackManager.sharedInstance().saveContext()
+            }
+            
+            break
+            
+        case .Canceling:
+            draggedPin = nil
+            
+            break
+            
+        default:
+            break
+        }
+    }
+
 }
