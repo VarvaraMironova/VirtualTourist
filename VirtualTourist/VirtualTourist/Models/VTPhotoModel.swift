@@ -16,21 +16,18 @@ class VTPhotoModel: NSManagedObject {
         static let URL   = "url_m"
     }
     
-    @NSManaged var pin  : VTPinModel
-    @NSManaged var title: String
-    @NSManaged var url  : String
-    
-    lazy var cacheIdentifier: String = {
-        return (self.url)
-    }()
+    @NSManaged var pin       : VTPinModel
+    @NSManaged var title     : String
+    @NSManaged var url       : String
+    @NSManaged var identifier: String
     
     var image: UIImage? {
         get {
-            return VTFlickrClient.Caches.imageCache.imageWithIdentifier(cacheIdentifier)
+            return VTFlickrClient.Caches.imageCache.imageWithIdentifier(identifier)
         }
         
         set {
-            VTFlickrClient.Caches.imageCache.storeImage(image, withIdentifier: cacheIdentifier)
+            VTFlickrClient.Caches.imageCache.storeImage(newValue, withIdentifier: identifier)
         }
     }
     
@@ -44,7 +41,7 @@ class VTPhotoModel: NSManagedObject {
         let entity =  NSEntityDescription.entityForName("VTPhotoModel", inManagedObjectContext: context)!
         super.init(entity: entity, insertIntoManagedObjectContext: context)
         
-        // Dictionary
+        identifier = NSUUID().UUIDString
         url = dictionary[Keys.URL] as! String
         title = dictionary[Keys.Title] as! String
     }
@@ -53,7 +50,7 @@ class VTPhotoModel: NSManagedObject {
         super.prepareForDeletion()
         
         // Passing nil will delete the cached file
-        VTFlickrClient.Caches.imageCache.storeImage(nil, withIdentifier: self.url)
+        VTFlickrClient.Caches.imageCache.storeImage(nil, withIdentifier: identifier)
     }
 
 }

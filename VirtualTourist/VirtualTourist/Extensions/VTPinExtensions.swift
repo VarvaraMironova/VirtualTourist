@@ -11,7 +11,7 @@ import MapKit
 let kBOUNDING_BOX_HALF_WIDTH  = 5.0
 let kBOUNDING_BOX_HALF_HEIGHT = 5.0
 
-extension VTAnnotationModel {
+extension VTPinModel {
     
     func searchedCoordinateString() -> String {
         let coordinate = self.coordinate
@@ -20,6 +20,7 @@ extension VTAnnotationModel {
         
         return "\(longitude - kBOUNDING_BOX_HALF_WIDTH), \(latitude - kBOUNDING_BOX_HALF_HEIGHT), \(longitude + kBOUNDING_BOX_HALF_WIDTH), \(latitude + kBOUNDING_BOX_HALF_HEIGHT)"
     }
+    
 }
 
 

@@ -14,7 +14,6 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
 {
     var selectedPin     : VTAnnotationModel!
     var blockOperation  : NSBlockOperation?
-    
     var rootView        : VTPhotosView! {
         get {
             if isViewLoaded() && self.view.isKindOfClass(VTPhotosView) {
@@ -35,7 +34,7 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
     // MARK: - NSFetchedResultsController
     lazy var fetchedResultsController: NSFetchedResultsController = {
         let fetchRequest = NSFetchRequest(entityName: "VTPhotoModel")
-        let pin = self.selectedPin.pinModel()
+        let pin = self.selectedPin.pin
         
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "url", ascending: true)]
         fetchRequest.predicate = NSPredicate(format: "pin == %@", pin!);
@@ -47,7 +46,8 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
         
         return fetchedResultsController
     }()
-
+    
+    // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -60,8 +60,8 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
         fetchedResultsController.delegate = self
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
         rootView.mapView.region = MKCoordinateRegionMake(selectedPin.coordinate, MKCoordinateSpanMake(0.04, 0))
     }
@@ -77,7 +77,7 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
         }
         
         //load new photoCollection
-        VTFlickrClient.sharedInstance().searchPhotoNearPin(selectedPin) {success, error in
+        VTFlickrClient.sharedInstance().searchPhotoNearPin(selectedPin.pin!) {success, error in
             if nil != error {
                 print(error!.localizedDescription)
             } else {
@@ -88,7 +88,7 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
         }
     }
     
-    // MARK: UICollectionViewDataSource
+    // MARK: - UICollectionViewDataSource
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return fetchedResultsController.sections!.count
     }
@@ -115,7 +115,7 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
         } else {
             VTFlickrClient.sharedInstance().imageDataForPhotoModel(photoModel) {data, error in
                 if let error = error {
-                    print("Poster download error: \(error.localizedDescription)")
+                    print(error.localizedDescription)
                 }
                 
                 if let data = data {
@@ -136,7 +136,7 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
         return cell
     }
     
-    // MARK: UICollectionViewDelegate
+    // MARK: - UICollectionViewDelegate
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         let photoModel = fetchedResultsController.objectAtIndexPath(indexPath) as! VTPhotoModel
         CoreDataStackManager.sharedInstance().delete(photoModel)
@@ -220,4 +220,5 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
             rootView.photosCollectionView.performBatchUpdates({self.blockOperation!.start()}, completion: nil)
         }
     }
+
 }

@@ -10,61 +10,55 @@ import Foundation
 
 extension VTFlickrClient {
     
-    func searchPhotoNearPin(pin: VTAnnotationModel, completionHandler:(success: Bool, error: NSError?) -> Void) {
-        //check, if pinModel persist in CoreData
-        if let pinModel = pin.coreDataModel as VTPinModel! {
-            methodArguments["bbox"] = pin.searchedCoordinateString()
-            
-            let urlString = kVTParameters.baseURL + escapedParameters(methodArguments)
-            let url = NSURL(string: urlString)!
-            let request = NSURLRequest(URL: url)
-            
-            downloadTask = self.task(request){data, error in
-                if nil != error {
-                    completionHandler(success: false, error: error)
-                } else {
-                    VTFlickrClient.parseJSONWithCompletionHandler(data) {result, error in
-                        if nil != error {
-                            completionHandler(success: false, error: error)
-                        } else {
-                            if let photosDictionary = result.valueForKey(kVTKeys.photos) as? NSDictionary {
-                                if let pageCount = photosDictionary["pages"] as? Int {
-                                    var totalPhotosVal = 0
-                                    if let totalPhotos = photosDictionary["total"] as? String {
-                                        totalPhotosVal = (totalPhotos as NSString).integerValue
-                                    }
-                                    
-                                    if totalPhotosVal > 0 {
-                                        var pageMax:Int = 4000 / Int((self.methodArguments["per_page"])!)!
-                                        pageMax = min(pageCount, pageMax)
-                                        let randomPage = Int(arc4random_uniform(UInt32(pageMax))) + 1
-                                        self.searchPhotosWithPageNumber(randomPage) {images, error in
-                                            if nil != error {
-                                                completionHandler(success: false, error: error!)
-                                            } else {
-                                                pinModel.storePhotosFromArray(images!) {finished in
-                                                    if finished {
-                                                        completionHandler(success: true, error: nil)
-                                                    }
+    func searchPhotoNearPin(pin: VTPinModel, completionHandler:(success: Bool, error: NSError?) -> Void) {
+        methodArguments["bbox"] = pin.searchedCoordinateString()
+        
+        let urlString = kVTParameters.baseURL + escapedParameters(methodArguments)
+        let url = NSURL(string: urlString)!
+        let request = NSURLRequest(URL: url)
+        
+        downloadTask = self.task(request){data, error in
+            if nil != error {
+                completionHandler(success: false, error: error)
+            } else {
+                VTFlickrClient.parseJSONWithCompletionHandler(data) {result, error in
+                    if nil != error {
+                        completionHandler(success: false, error: error)
+                    } else {
+                        if let photosDictionary = result.valueForKey(kVTKeys.photos) as? NSDictionary {
+                            if let pageCount = photosDictionary["pages"] as? Int {
+                                var totalPhotosVal = 0
+                                if let totalPhotos = photosDictionary["total"] as? String {
+                                    totalPhotosVal = (totalPhotos as NSString).integerValue
+                                }
+                                
+                                if totalPhotosVal > 0 {
+                                    var pageMax:Int = 4000 / Int((self.methodArguments["per_page"])!)!
+                                    pageMax = min(pageCount, pageMax)
+                                    let randomPage = Int(arc4random_uniform(UInt32(pageMax))) + 1
+                                    self.searchPhotosWithPageNumber(randomPage) {images, error in
+                                        if nil != error {
+                                            completionHandler(success: false, error: error!)
+                                        } else {
+                                            pin.storePhotosFromArray(images!) {finished in
+                                                if finished {
+                                                    completionHandler(success: true, error: nil)
                                                 }
                                             }
                                         }
                                     }
-                                } else {
-                                    let contentError = VTFlickrClient.errorForMessage("Can't find key 'photo' in \(photosDictionary)")
-                                    completionHandler(success: false, error: contentError)
                                 }
                             } else {
-                                let contentError = VTFlickrClient.errorForMessage("Can't find key 'photos' in \(result)")
+                                let contentError = VTFlickrClient.errorForMessage("Can't find key 'photo' in \(photosDictionary)")
                                 completionHandler(success: false, error: contentError)
                             }
+                        } else {
+                            let contentError = VTFlickrClient.errorForMessage("Can't find key 'photos' in \(result)")
+                            completionHandler(success: false, error: contentError)
                         }
                     }
                 }
             }
-        } else {
-            let contentError = VTFlickrClient.errorForMessage("Can't find entity 'pin' \(pin)")
-            completionHandler(success: false, error: contentError)
         }
     }
     
