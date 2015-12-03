@@ -81,9 +81,7 @@ class CoreDataStackManager {
     }
     
     func delete(object:VTPhotoModel) {
-        dispatch_async(dispatch_get_main_queue()) {
-            self.managedObjectContext.deleteObject(object)
-        }
+        self.managedObjectContext.deleteObject(object)
     }
     
 }

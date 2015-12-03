@@ -138,10 +138,12 @@ class VTPhotosViewController: UIViewController, MKMapViewDelegate, UICollectionV
     
     // MARK: - UICollectionViewDelegate
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let photoModel = fetchedResultsController.objectAtIndexPath(indexPath) as! VTPhotoModel
-        CoreDataStackManager.sharedInstance().delete(photoModel)
-        
-        CoreDataStackManager.sharedInstance().saveContext()
+        dispatch_async(dispatch_get_main_queue()) {
+            let photoModel = self.fetchedResultsController.objectAtIndexPath(indexPath) as! VTPhotoModel
+            CoreDataStackManager.sharedInstance().delete(photoModel)
+            
+            CoreDataStackManager.sharedInstance().saveContext()
+        }
     }
     
     //MARK: - NSFetchedResultControllerDelegate

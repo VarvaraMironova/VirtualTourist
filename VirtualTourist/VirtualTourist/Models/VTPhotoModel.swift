@@ -49,7 +49,6 @@ class VTPhotoModel: NSManagedObject {
     override func prepareForDeletion() {
         super.prepareForDeletion()
         
-        // Passing nil will delete the cached file
         VTFlickrClient.Caches.imageCache.storeImage(nil, withIdentifier: identifier)
     }
 
